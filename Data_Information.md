@@ -1,5 +1,5 @@
 # Data Information
-The data in this project includes ERA5 cummulative basin precipitation, LISFLOOD forecasted river discharge rates, flood event dates, spatial data, and monthly oil production.
+The data for this project includes ERA5 cummulative basin precipitation, LISFLOOD forecasted river discharge rates, flood event dates, spatial data, and monthly oil production.
 
 ## ERA5 
 

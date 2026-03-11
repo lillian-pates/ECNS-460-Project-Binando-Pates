@@ -1,8 +1,9 @@
-Topic Description:
-
+## Topic Description:
 
 In October of 2025, the city of Poza Rica located in Veracruz, Mexico experienced a catastrophic flood which resulted in deaths and property damage. The Mexican government had previously purchased a parametric insurance policy for such geological disasters. However, the index failed to be triggered which resulted in the Mexican government not receiving a payout. Many citizens were left without aid and the Mexican president received intense backlash. In light of this, our financial engineering capstone is to develop models that produce the optimal index in order to avoid another payout failure. This area is specifically prone to flooding due to its position near the Gulf of Mexico, river basin geography, low elevation, poor infrastructure, and improper urban planning. Specifically, they have experienced over 40 confirmed floods from 1971-2025. 
+
 Poza Rica was founded as a hub for crude oil refining and oil processing still remains as the city’s main industry. Due to limited property damage data, an impact proxy for floods in the region is being developed. The idea being that following a flood event, there is a decrease in oil production. This decrease in oil production can be quantified and used as a proxy for the impact of varying severities of floods. Mexico’s state owned oil company, PEMEX, operates the near-by oil field and Escolin Petrochemical Processing Facility. Data from PEMEX is being utilized to develop said impact proxy for our capstone. However, these sites are not located directly within the city. 
+
 In addition to the analysis of the impact proxy for our capstone, we have decided to conduct spatial analysis on distance measures, flood-event locations, and . How far is economic activity (petrochemical processing) from the key flooding zones? What are some of the spatial characteristics of affected areas like elevation, slope, and watershed features?  How does oil processing infrastructure impact flood severity? This analysis will be incorporated into the impact proxy to add validity within our parametric model design. We are confident that this analysis will surpass the examples in class and push us to develop new data analytical skills. 
 
 

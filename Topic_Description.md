@@ -1,4 +1,4 @@
-## Topic Description:
+## Topic Description
 
 In October of 2025, the city of Poza Rica located in Veracruz, Mexico experienced a catastrophic flood which resulted in deaths and property damage. The Mexican government had previously purchased a parametric insurance policy for such geological disasters. However, the index failed to be triggered which resulted in the Mexican government not receiving a payout. Many citizens were left without aid and the Mexican president received intense backlash. In light of this, our financial engineering capstone is to develop models that produce the optimal index in order to avoid another payout failure. This area is specifically prone to flooding due to its position near the Gulf of Mexico, river basin geography, low elevation, poor infrastructure, and improper urban planning. Specifically, they have experienced over 40 confirmed floods from 1971-2025. 
 

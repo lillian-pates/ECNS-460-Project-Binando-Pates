@@ -2,9 +2,7 @@
 The data for this project includes ERA5 cummulative basin precipitation, LISFLOOD forecasted river discharge rates, flood event dates, spatial data, and monthly oil production.
 
 ## Dataset Relation
-The analysis combines several datasets to estimate the impact of flood events on oil production in Poza Rica, Veracruz, Mexico within the Río Cazones basin. Precipitation data (ERA5), forecasted river flow (LISFLOOD), and historical flood events are combined in a regression model to identify the effect of a flood on oil production. This will be combined with spacial data to better estimate the impact. 
-
-All these datasets are specifically for Poza Rica, Veracruz, Mexico and the Río Cazones basin. In combining the spatial datasets (topography, hydrology, land-use, etc.), the hope is to improve understanding and differences of flood exposure to improve economic proxy for flood damages.
+The analysis combines several datasets to estimate the impact of flood events on oil production in Poza Rica, Veracruz, Mexico within the Río Cazones basin. Precipitation data (ERA5), forecasted river flow (LISFLOOD), and historical flood events are combined in a regression model to identify the effect of a flood on oil production. This will be combined with spacial data to better estimate the impact. In combining the spatial datasets (topography, hydrology, land-use, etc.), the hope is to improve understanding and differences of flood exposure to improve economic proxy for flood damages.
 
 ## ERA5 
 Daily cummulative watershed precipitation was collected from the European Centre for Medium-Range Weather Forecasts's ERA5 reanalysis model (1975-2025). This is a publically avaiable assimilation dataset, utilizing physics, model data, and station observations to reconstruct global climate and weather. Precipitation data was provided by capstone sponsor.

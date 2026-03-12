@@ -23,4 +23,10 @@ News Sources: Available upon request
 
 ## Spatial Data
 
+
+
 ## Oil Production
+Production by petrochemical complex data was obtained in thousand tonnes from the Pemex public database provided by the Mexican government. This dataset includes production data (January 1990-December 2025) from all of the Pemex sites (23) in Mexico including crude oil refineries, petrochemical complexes, and gas processing complexes. This data consists of monthly production and facility. 
+
+Source: https://ebdi.pemex.com/bdi/bdiController.do
+

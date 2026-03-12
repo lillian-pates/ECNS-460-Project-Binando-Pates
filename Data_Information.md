@@ -24,12 +24,12 @@ News Sources: Available upon request
 ## Spatial Data
 
 ### Elevation & Geological Data 
-A dataset containing global digital elevation model (DEM) was downloaded from the EarthExplorer feature on the United States Geological Survey website. This data contains elevation levels,  topography, slope, drainage patterns, and watershed boundaries of the Poza Rica and its surrounding area (tile N20W098). This data was public and free to use after setting up an account with USGS. 
+A dataset containing global digital elevation model (DEM) was downloaded from the EarthExplorer feature on the United States Geological Survey website. This data contains elevation levels,  topography, slope, drainage patterns, and watershed boundaries of the Poza Rica and its surrounding area (tile N20W098). This data was public and free to use after setting up an account with USGS. The data was originally published on  9/23/2014 but updated on 3/10/2025. 
 
 Source: https://earthexplorer.usgs.gov
 
 ### River Data 
-
+This data includes information about river reach length, distance from upstream headwaters, river order, estimated long-term average discharge. The dataset downloaded was for the entity of North America and will need to be refined for the Poza Rica Area. This data is free and publicly available on the HyrdoSHEDS which is a project by the World Wildlife Fund US, published in October 2019. 
 
 Source: https://www.hydrosheds.org/products/hydrorivers#downloads
 

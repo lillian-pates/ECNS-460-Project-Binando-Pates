@@ -22,8 +22,16 @@ DesInventar: https://www.desinventar.net
 News Sources: Available upon request
 
 ## Spatial Data
-FINISH
 
+### Elevation & Geological Data 
+A dataset containing global digital elevation model (DEM) was downloaded from the EarthExplorer feature on the United States Geological Survey website. This data contains elevation levels,  topography, slope, drainage patterns, and watershed boundaries of the Poza Rica and its surrounding area (tile N20W098). This data was public and free to use after setting up an account with USGS. 
+
+Source: https://earthexplorer.usgs.gov
+
+### River Data 
+
+
+Source: https://www.hydrosheds.org/products/hydrorivers#downloads
 
 ## Oil Production
 Production by petrochemical complex data was obtained in thousand tonnes from the Pemex public database provided by the Mexican government. This dataset includes production data (January 1990-December 2025) from all of the Pemex sites (23) in Mexico including crude oil refineries, petrochemical complexes, and gas processing complexes. This data consists of monthly production and facility. 

@@ -9,12 +9,10 @@ See Topic Description and Data Information for additional project information.
 How does flood exposure vary across elevation, river proximity, and floodplain extent in Poza Rica?
 
 ## Repository Structure
-- `data/`: raw, external, and processed datasets
+- `data/`: raw and processed datasets
 - `scripts/`: numbered data processing and modeling pipeline
-- `src/`: reusable helper functions
-- `analysis/`: exploratory and intermediate analysis
-- `reports/`: figures, tables, and presentations
-- `docs/`: rendered outputs for viewing
+- `outputs/`: figures, tables, and presentations
+- `references/`: project sources
 
 ### Data Sources
 

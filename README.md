@@ -11,7 +11,7 @@ How does flood exposure vary across elevation, river proximity, and floodplain e
 ### Repository Structure
 - `data/`: raw and processed datasets
 - `scripts/`: numbered data processing and modeling pipeline
-- `outputs/`: figures, tables, and presentations
+- `outputs/`: figures, tables, and html files
 - `references/`: project sources
 
 ### Reproducibility

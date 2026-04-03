@@ -6,7 +6,6 @@ This project aims to utilize descriptive and spatial analysis to understand floo
 See Topic Description and Data Information for additional project information.
 
 **Research Question:**
-
 How does flood exposure vary across elevation, river proximity, and floodplain extent in Poza Rica?
 
 ### Repository Structure

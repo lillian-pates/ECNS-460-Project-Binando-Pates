@@ -4,6 +4,12 @@ This project aims to utilize descriptive and spatial analysis to estimate the ef
 
 See Topic Description, Data Information, and Tentative Analysis Plan for additional project information.
 
+### Objective
+words
+
+**Research Question:**
+words
+
 ### Repository Structure
 
 ### Data Sources

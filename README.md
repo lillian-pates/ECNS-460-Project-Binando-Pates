@@ -8,6 +8,13 @@ See Topic Description and Data Information for additional project information.
 **Research Question:**
 How does flood exposure vary across elevation, river proximity, and floodplain extent in Poza Rica?
 
+### Data Sources
+- NASA Digital Elevation Maps
+- Microsoft Building Footprints
+- WorldPop: México - Spatial Distribution of Population
+- DesInventar & News Source Flood Events
+- LISFLOOD River Flow Forecast
+
 ### Repository Structure
 - `data/`: raw and processed datasets
 - `scripts/`: numbered data processing and modeling pipeline

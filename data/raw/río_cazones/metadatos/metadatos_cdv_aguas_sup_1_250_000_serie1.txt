@@ -1,0 +1,31 @@
+identifier:
+
+title: Conjunto de datos vectoriales de la carta de Aguas superficiales escala 1:250 000 serie I
+
+description: Este producto ha sido concebido para atender demandas de información con referencia geográfica, las principales entidades hidrológicas representadas son: Regiones Hidrológicas, Cuencas y Subcuencas, Unidades de escurrimiento, Cuerpos de Agua como presas, lagos, lagunas y bordos además de  datos puntuales que representan los resultados físico-químicos de las muestras de agua colectadas en campo. El diseño conceptual con el que se genera la información, la hace apropiada para manejarse en Sistemas de Información Geográfica o en Sistemas de Cartografía Asistida por Computadora, para aplicarse en el desarrollo de proyectos de cobertura regional en diversos campos en los que la información acerca de la posición y distribución de los fenómenos geográficos es esencial.
+
+modified: 
+
+publisher: Instituto Nacional de Estadística y Geografía, INEGI
+
+mbox: atencion.usuarios@inegi.org.mx
+
+license: Términos de Libre Uso de la Información del INEGI 
+http://www.inegi.org.mx/terminos/terminos_info.aspx
+
+datadictionary:
+
+keyword: regiones, hidrológicas, cuencas, Subcuencas, unidades, escurrimientos, divisiones, sitios, muestreos, aguas
+
+contactpoint: Lic. José de Jesús Esquivel de la Rosa, 01800 111 4634
+
+temporal: 
+
+spatial: Estados Unidos Mexicanos
+
+accrualperiodicity: 
+
+distribution: http://buscador.inegi.org.mx//search?q=Conjunto+de+datos+vectoriales+de+la+carta+de+Aguas+superficiales.+Escala+1%3A250+000.+Serie+I&client=ProductosR&proxystylesheet=ProductosR&num=10&getfields=*&sort=meta:edicion:D:E:::D&entsp=a__inegi_politica_p72&lr=lang_es%7Clang_en&oe=UTF-8&ie=UTF-8&ip=10.152.21.8&entqr=3&filter=0&site=ProductosBuscador&tlen=260
+
+ 
+

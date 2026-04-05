@@ -1,15 +1,23 @@
+############################################################
+# Montana State University 
+# Project: ECNS 460 Data Analytics Spring 2026
+# Author: Bailey Binando & Lillian Pates
+# Created: 2026-04-01
+# Last Updated: 2026-04-
 
-# Bailey Binando & Lillian Pates
+# Research Question: 
 # Source: Spatial Statistics for Data Science: Theory and Practice with R
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
-
-# Load Packages
+# Output: Cropped Spatial Data files 
+############################################################
+# Preliminary: Load Packages
 library(tidyverse)
 library(sf) # vector data
 library(terra) # rastor data
 library(here)
 
-# Load Data
+############################################################
+# Preliminary: Load Data
 # mexico admin. boundaries
 municipalities <- st_read(here("data", "raw", "mex_admin_boundaries.shp", "mex_admin2.shp"), quiet = TRUE)
 
@@ -30,6 +38,7 @@ floodplain_100yr <- st_read(here("data", "raw", "floodplains_HAND", "floodplain_
 # digital elevation map
 dem <- rast(here("data", "raw", "cazones_basin_dem.tif"))
 
+############################################################
 # Clean Data
 # check crs (coordinate reference system)
 st_crs(municipalities) # degrees
@@ -94,6 +103,7 @@ floodplain_100yr_clipped <- st_intersection(floodplain_100yr, poza_rica)
 dem_crop <- crop(dem_m, vect(poza_rica))
 dem_mask <- mask(dem_crop, vect(poza_rica))
 
+############################################################
 # visual check
 ggplot() +
   geom_sf(data = poza_rica, fill = NA, color = "black") +
@@ -104,6 +114,7 @@ ggplot() +
 
 plot(dem_mask)
 
+############################################################
 # write files
 st_write(poza_rica, here("data", "processed", "poza_rica.gpkg"))
 st_write(infrastructure_clipped, here("data", "processed", "buildings_clipped.gpkg"))

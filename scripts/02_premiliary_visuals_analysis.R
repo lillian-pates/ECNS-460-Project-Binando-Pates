@@ -3,9 +3,8 @@
 # Project: ECNS 460 Data Analytics Spring 2026
 # Author: Bailey Binando & Lillian Pates
 # Created: 2026-04-01
-# Last Updated: 2026-04-01
+# Last Updated: 2026-04-05
 
-# Research Question: 
 # Output: Basic Visuals & Regression Analysis 
 ############################################################
 # Preliminary: Libraries 

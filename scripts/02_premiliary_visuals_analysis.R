@@ -3,9 +3,8 @@
 # Project: ECNS 460 Data Analytics Spring 2026
 # Author: Bailey Binando & Lillian Pates
 # Created: 2026-04-01
-# Last Updated: 2026-04-01
+# Last Updated: 2026-04-05
 
-# Research Question: 
 # Output: Basic Visuals & Regression Analysis 
 ############################################################
 # Preliminary: Libraries 
@@ -21,6 +20,8 @@ library(terra)
 ## Main 
 dem_pz = rast("data/processed/dem_pozarica.tif")
 rivers = st_read("data/processed/river_clipped.gdb")
+flooding = read_csv("data/processed/flood_timeseries_clean.csv")
+
 
 ## For Analysis
 population = st_read("data/processed/poza_rica.gpkg")

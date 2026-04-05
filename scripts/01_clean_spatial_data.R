@@ -104,7 +104,7 @@ ggplot() +
 
 plot(dem_mask)
 
-# write files
+# Write Files
 st_write(poza_rica, here("data", "processed", "poza_rica.gpkg"))
 st_write(infrastructure_clipped, here("data", "processed", "buildings_clipped.gpkg"))
 st_write(river_clipped, here("data", "processed", "river_clipped.gpkg"))

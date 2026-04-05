@@ -3,21 +3,20 @@
 # Project: ECNS 460 Data Analytics Spring 2026
 # Author: Bailey Binando & Lillian Pates
 # Created: 2026-04-01
-# Last Updated: 2026-04-01
+# Last Updated: 2026-04-05
 
-# Research Question: 
 # Source: Spatial Statistics for Data Science: Theory and Practice with R
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
 # Output: Cropped Spatial Data files 
 ############################################################
-# Preliminary: Load Packages
+# Load Packages
 library(tidyverse)
 library(sf) # vector data
 library(terra) # rastor data
 library(here)
 
 ############################################################
-# Preliminary: Load Data
+# Load Data
 # mexico admin. boundaries
 municipalities <- st_read(here("data", "raw", "mex_admin_boundaries.shp", "mex_admin2.shp"), quiet = TRUE)
 
@@ -115,7 +114,7 @@ ggplot() +
 plot(dem_mask)
 
 ############################################################
-# write files
+# Write Files
 st_write(poza_rica, here("data", "processed", "poza_rica.gpkg"))
 st_write(infrastructure_clipped, here("data", "processed", "buildings_clipped.gpkg"))
 st_write(river_clipped, here("data", "processed", "river_clipped.gpkg"))

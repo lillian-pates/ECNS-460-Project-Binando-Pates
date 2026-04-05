@@ -1,0 +1,283 @@
+---
+title: "Visualization"
+author: "Bailey Binando, Lillian Pates"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r package_load}
+#| echo: false
+
+# load packages
+library(ggplot2)
+library(sf) # vector data
+library(terra) # rastor data
+library(plotly)
+```
+
+You can add options to executable code like this
+
+```{r data_load}
+#| echo: false
+
+# load data
+
+# floodplain shapefiles (2yr, 5yr, 10yr, 25yr, 50yr, 100yr)
+floodplain_2yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_2yr.shp", quiet = TRUE)
+floodplain_5yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_5yr.shp", quiet = TRUE)
+floodplain_10yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_10yr.shp", quiet = TRUE)
+floodplain_25yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_25yr.shp", quiet = TRUE)
+floodplain_50yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_50yr.shp", quiet = TRUE)
+floodplain_100yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_100yr.shp", quiet = TRUE)
+
+# poza rica building footprint
+buildings <- st_read("../data/raw/microsoft_buildings_pozarica.gpkg", quiet = TRUE)
+
+# dem
+dem <- rast("../data/raw/floodplains_HAND/dem_input.tif")
+
+# river
+river <- st_read("../data/raw/cazones/rio_cazones_osm.shp", quiet = TRUE)
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+
+library(ggplot2)
+library(plotly)
+library(viridis)
+
+cols <- viridis(5, option = "plasma", direction = -1)
+xmin <- -97.52999
+ymin <-  20.43726
+xmax <- -97.33529
+ymax <-  20.60058
+
+map <- ggplot() +
+  geom_sf(data = floodplain_100yr, aes(fill = "Floodplain (100yr)"), alpha = 0.3, color = "black") +
+  geom_sf(data = floodplain_50yr, aes(fill = "Floodplain (50yr)"), alpha = 0.1, color = "black") +
+  geom_sf(data = floodplain_25yr, aes(fill = "Floodplain (25yr)"), alpha = 0.1, color = "black") +
+  geom_sf(data = floodplain_10yr, aes(fill = "Floodplain (10yr)"), alpha = 0.1, color = "black") +
+  geom_sf(data = floodplain_5yr, aes(fill = "Floodplain (5yr)"), alpha = 0.1, color = "black") +
+  geom_sf(data = buildings, color = "grey60", alpha = 0.75) +
+  geom_sf(data = river, color = "darkblue", linewidth = 1) +
+
+  labs(
+    title = "Map of Poza Rica, Veracruz, México",
+    subtitle = "Words",
+    fill = "Flood Extent"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Floodplain (5yr)" = cols[1],
+      "Floodplain (10yr)" = cols[2],
+      "Floodplain (25yr)" = cols[3],
+      "Floodplain (50yr)" = cols[4],
+      "Floodplain (100yr)" = cols[5]
+    )
+  ) +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+
+ggplotly(map)
+
+
+```
+
+```{r}
+#| fig-width: 9
+#| fig-height: 7
+library(ggplot2)
+library(plotly)
+library(viridis)
+library(sf)
+
+
+#bbox <- st_bbox(buildings)
+#bbox
+#pad_x <- 
+#pad_x <- (bbox["xmax"] - bbox["xmin"]) * 0.03
+#pad_y <- (bbox["ymax"] - bbox["ymin"]) * 0.03
+  
+bbox <- st_bbox(buildings)
+
+xmid <- (bbox["xmin"] + bbox["xmax"]) / 2 #- 0.03
+ymid <- (bbox["ymin"] + bbox["ymax"]) / 2
+
+zoom_factor <- 0.35   # smaller = more zoomed in
+
+x_half <- (bbox["xmax"] - bbox["xmin"]) * zoom_factor / 2
+y_half <- (bbox["ymax"] - bbox["ymin"]) * zoom_factor / 2
+
+
+# -----------------------------
+# Floodplain colors
+# -----------------------------
+#cols <- viridis(5, option = "mako", direction = -1)
+library(RColorBrewer)
+cols <- c("#084594", "#2171b5", "#4292c6", "#6baed6", "#9ecae1", "#c6dbef")
+
+# -----------------------------
+# Build ggplot map
+# -----------------------------
+map <- ggplot() +
+  geom_sf(
+    data = floodplain_100yr,
+    aes(fill = "Floodplain (100yr)"),
+    alpha = 0.25,
+    #color = "black"
+  ) +
+  geom_sf(
+    data = floodplain_50yr,
+    aes(fill = "Floodplain (50yr)"),
+    alpha = 0.35,
+    #color = "black"
+  ) +
+  geom_sf(
+    data = floodplain_25yr,
+    aes(fill = "Floodplain (25yr)"),
+    alpha = 0.35,
+    #color = "black"
+  ) +
+  geom_sf(
+    data = floodplain_10yr,
+    aes(fill = "Floodplain (10yr)"),
+    alpha = 0.25,
+    #color = "black"
+  ) +
+  geom_sf(
+    data = floodplain_5yr,
+    aes(fill = "Floodplain (5yr)"),
+    alpha = 0.25,
+    #color = "black"
+  ) +
+  geom_sf(
+    data = buildings,
+    fill = "grey75",
+    color = "grey60",
+    alpha = 0.75
+  ) +
+  geom_sf(
+    data = river,
+    color = "darkblue",
+    linewidth = 1
+  ) +
+  coord_sf(
+  xlim = c(xmid - x_half, xmid + x_half),
+  ylim = c(ymid - y_half, ymid + y_half),
+  expand = FALSE
+) +
+  labs(
+    title = "Map of Poza Rica, Veracruz, México",
+    subtitle = "Interactive floodplain layers",
+    fill = "Flood Extent"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Floodplain (5yr)"   = cols[5],
+      "Floodplain (10yr)"  = cols[4],
+      "Floodplain (25yr)"  = cols[3],
+      "Floodplain (50yr)"  = cols[2],
+      "Floodplain (100yr)" = cols[1]
+    ),
+    breaks = c(
+      "Floodplain (5yr)",
+      "Floodplain (10yr)",
+      "Floodplain (25yr)",
+      "Floodplain (50yr)",
+      "Floodplain (100yr)"
+    )
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid = element_blank(),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+# -----------------------------
+# Convert to plotly
+# -----------------------------
+g <- ggplotly(map)
+
+# Hide floodplains initially
+for (i in seq_along(g$x$data)) {
+  nm <- g$x$data[[i]]$name
+  if (!is.null(nm) && grepl("Floodplain", nm)) {
+    g$x$data[[i]]$visible <- "legendonly"
+  }
+}
+
+g
+
+
+
+```
+
+```{r}
+
+
+municipality <- st_read("~/Desktop/ECNS 460/GitHub/ECNS-460/ECNS-460-Project-Binando-Pates/data/raw/mex_admin_boundaries.shp/mex_admin2.shp")
+
+library(dplyr)
+library(stringr)
+
+poza_rica <- municipality %>%
+  filter(str_detect(adm2_name, "Poza Rica"))
+
+plot(st_geometry(poza_rica))
+```
+
+```{r}
+library(sf)
+
+library(sf)
+library(dplyr)
+
+# make sure CRS matches first
+municipality <- st_transform(municipality, st_crs(buildings))
+
+poza_rica <- municipality %>%
+  filter(grepl("Poza Rica", adm2_name, ignore.case = TRUE))
+
+# 1) are the geometries valid?
+st_is_valid(poza_rica)
+table(st_is_valid(buildings))
+
+building_reasons <- st_is_valid(buildings, reason = TRUE)
+
+table(building_reasons[!st_is_valid(buildings)])
+
+library(sf)
+library(dplyr)
+
+# match CRS
+municipality <- st_transform(municipality, st_crs(buildings))
+
+# get Poza Rica
+poza_rica <- municipality %>%
+  filter(grepl("Poza Rica", adm2_name, ignore.case = TRUE))
+
+# repair building geometries
+buildings_fixed <- st_make_valid(buildings)
+
+# confirm repair worked
+table(st_is_valid(buildings_fixed))
+
+buildings_clipped <- buildings_fixed[
+  st_intersects(buildings_fixed, poza_rica, sparse = FALSE)[,1],
+]
+
+plot(st_geometry(poza_rica), border = "red", lwd = 2)
+plot(st_geometry(buildings_clipped), col = "lightblue", border = NA)
+
+```

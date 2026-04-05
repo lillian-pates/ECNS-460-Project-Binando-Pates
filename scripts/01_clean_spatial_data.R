@@ -9,14 +9,14 @@
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
 # Output: Cropped Spatial Data files 
 ############################################################
-# Preliminary: Load Packages
+# Load Packages
 library(tidyverse)
 library(sf) # vector data
 library(terra) # rastor data
 library(here)
 
 ############################################################
-# Preliminary: Load Data
+# Load Data
 # mexico admin. boundaries
 municipalities <- st_read(here("data", "raw", "mex_admin_boundaries.shp", "mex_admin2.shp"), quiet = TRUE)
 
@@ -113,12 +113,8 @@ ggplot() +
 
 plot(dem_mask)
 
-<<<<<<< HEAD
-# Write Files
-=======
 ############################################################
-# write files
->>>>>>> c67254ca4b0dbbf5011182ed6d89c8106e004e32
+# Write Files
 st_write(poza_rica, here("data", "processed", "poza_rica.gpkg"))
 st_write(infrastructure_clipped, here("data", "processed", "buildings_clipped.gpkg"))
 st_write(river_clipped, here("data", "processed", "river_clipped.gpkg"))

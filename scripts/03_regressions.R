@@ -20,6 +20,8 @@ library(terra)
 ## Main 
 dem_pz = rast("data/processed/dem_pozarica.tif")
 rivers = st_read("data/processed/river_clipped.gdb")
+flooding = read_csv("data/processed/flood_timeseries_clean.csv")
+
 
 ## For Analysis
 population = st_read("data/processed/poza_rica.gpkg")
@@ -66,8 +68,4 @@ hill = shade(
 
 
 ############################################################
-# Exploratory Analysis  
 
-
-
-############################################################

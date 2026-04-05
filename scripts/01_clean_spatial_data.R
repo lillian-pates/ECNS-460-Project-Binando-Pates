@@ -5,6 +5,7 @@
 # Created: 2026-04-01
 # Last Updated: 2026-04-05
 
+# Script 1 
 # Source: Spatial Statistics for Data Science: Theory and Practice with R
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
 # Output: Cropped Spatial Data files 

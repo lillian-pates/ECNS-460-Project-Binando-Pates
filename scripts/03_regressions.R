@@ -5,6 +5,7 @@
 # Created: 2026-04-01
 # Last Updated: 2026-04-05
 
+# Script 3 
 # Output: Basic Visuals & Regression Analysis 
 ############################################################
 # Preliminary: Libraries 
@@ -51,7 +52,6 @@ hill = shade(
 
 ############################################################
 # Preliminary Visuals 
-
 
 
 

@@ -1,8 +1,14 @@
 
 # Bailey Binando and Lillian Pates
 
-# Source: Spatial Statistics for Data Science: Theory and Practice with R
+# Source #1: Spatial Statistics for Data Science: Theory and Practice with R
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
+
+# Source #2: Digital Soil Mapping with R
+# url: https://zia207.quarto.pub/digital-terrain-analysis.html
+
+# Source #3: R for GIS for Economists
+# url: https://tmieno2.github.io/R-as-GIS-for-Economists-Quarto/chapters/02-VectorDataBasics.html
 
 # Load Packages
 library(tidyverse)
@@ -22,17 +28,169 @@ floodplain_100yr <- st_read(here("data", "processed", "floodplain_100yr.gpkg"), 
 dem <- rast(here("data", "processed", "dem_pozarica.tif"))
 
 # Variable Creation
-# distance from river
-# elevation
-# slope
-# assets within flood plain
 
-# distance from river
-# distance from building centroid to river
-building_centroid <- st_centroid(buildings)
-river_distance <- st_distance(building_centroid, river)
-dim(river_distance)
-st_crs(buildings)
-st_crs(river)
-nrow(river)
-plot(river)
+# find point within building
+building_point <- st_point_on_surface(buildings) 
+
+# calculate slope for entire dem
+slope <- terrain(dem, v = "slope", unit = "degrees")
+
+# check for duplicates (none)
+sum(duplicated(st_as_text(buildings$geom)))
+
+# create vulnerability variables
+building_vulnerability <- buildings |>
+  mutate(
+    building_id = row_number(), # create unique id
+    # distance from point inside building to river
+    # originally tried building centroid but irregular shaped buildings produced centroids that were outside building polygon
+    river_distance = as.numeric(st_distance(building_point, river)), # calculate distance from point to river
+    # elevation of point inside building
+    building_elevation = terra::extract(dem, vect(building_point))[,2], # remove id
+    # slope of point inside building
+    building_slope = terra::extract(slope, vect(building_point))[,2], # remove id
+    # assets within floodplain (binary)
+    in_floodplain2yr = lengths(st_intersects(buildings, floodplain_2yr)),
+    in_floodplain5yr = lengths(st_intersects(buildings, floodplain_5yr)),
+    in_floodplain10yr = lengths(st_intersects(buildings, floodplain_10yr)),
+    in_floodplain25yr = lengths(st_intersects(buildings, floodplain_25yr)),
+    in_floodplain50yr = lengths(st_intersects(buildings, floodplain_50yr)),
+    in_floodplain100yr = lengths(st_intersects(buildings, floodplain_100yr)),
+  )
+
+# create exposure variables
+building_exposure <- buildings |>
+  mutate(
+    building_id = row_number(), # unique id
+    building_area = as.numeric(st_area(geom)) # calc building polygon area
+  )
+
+# find building area within floodplain
+area_floodplain2yr <- st_intersection(building_exposure, floodplain_2yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |> # remove geom info
+  group_by(building_id) |> # group by building id to sum area of all building pieces
+  summarize(
+    area_floodplain2yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain2yr) # select only specific cols.
+
+# check to make sure there is no duplicates
+sum(duplicated(area_floodplain2yr$building_id))
+
+area_floodplain5yr <- st_intersection(building_exposure, floodplain_5yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |>
+  group_by(building_id) |>
+  summarize(
+    area_floodplain5yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain5yr)
+
+sum(duplicated(area_floodplain5yr$building_id))
+
+area_floodplain10yr <- st_intersection(building_exposure, floodplain_10yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |>
+  group_by(building_id) |>
+  summarize(
+    area_floodplain10yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain10yr)
+
+sum(duplicated(area_floodplain10yr$building_id))
+
+area_floodplain25yr <- st_intersection(building_exposure, floodplain_25yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |>
+  group_by(building_id) |>
+  summarize(
+    area_floodplain25yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain25yr)
+
+sum(duplicated(area_floodplain25yr$building_id))
+
+area_floodplain50yr <- st_intersection(building_exposure, floodplain_50yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |>
+  group_by(building_id) |>
+  summarize(
+    area_floodplain50yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain50yr)
+
+sum(duplicated(area_floodplain50yr$building_id))
+
+area_floodplain100yr <- st_intersection(building_exposure, floodplain_100yr) |>
+  mutate(area = st_area(geom)) |>
+  st_drop_geometry() |>
+  group_by(building_id) |>
+  summarize(
+    area_floodplain100yr = sum(area),
+    .groups = "drop"
+  ) |>
+  select(building_id, area_floodplain100yr)
+
+sum(duplicated(area_floodplain100yr$building_id))
+
+# find total area of each building
+building_area <- building_exposure |>
+  select(building_id, building_area) |>
+  st_drop_geometry()
+
+# join all data
+building_vulnerability_exposure <- building_vulnerability |>
+  left_join(area_floodplain2yr, by = "building_id") |>
+  left_join(area_floodplain5yr, by = "building_id") |>
+  left_join(area_floodplain10yr, by = "building_id") |>
+  left_join(area_floodplain25yr, by = "building_id") |>
+  left_join(area_floodplain50yr, by = "building_id") |>
+  left_join(area_floodplain100yr, by = "building_id") |>
+  left_join(building_area, by = "building_id") |>
+  mutate( # replace NAs with 0 (not in floodplain, area = 0)
+    area_floodplain2yr = ifelse(is.na(area_floodplain2yr), 0, area_floodplain2yr),
+    area_floodplain5yr = ifelse(is.na(area_floodplain5yr), 0, area_floodplain5yr),
+    area_floodplain10yr = ifelse(is.na(area_floodplain10yr), 0, area_floodplain10yr),
+    area_floodplain25yr = ifelse(is.na(area_floodplain25yr), 0, area_floodplain25yr),
+    area_floodplain50yr = ifelse(is.na(area_floodplain50yr), 0, area_floodplain50yr),
+    area_floodplain100yr = ifelse(is.na(area_floodplain100yr), 0, area_floodplain100yr)
+  )
+
+# view
+glimpse(building_vulnerability_exposure)
+
+# create final dataset (select specific cols.)
+final_exposure_vulnerability <- building_vulnerability_exposure |>
+  mutate( # normalize building area exposed
+    exposure_2yr = area_floodplain2yr / building_area,
+    exposure_5yr = area_floodplain5yr / building_area,
+    exposure_10yr = area_floodplain10yr / building_area,
+    exposure_25yr = area_floodplain25yr / building_area,
+    exposure_50yr = area_floodplain50yr / building_area,
+    exposure_100yr = area_floodplain100yr / building_area
+  ) |>
+  select(building_id, river_distance, building_elevation, building_slope,
+         in_floodplain2yr, in_floodplain5yr, in_floodplain10yr, in_floodplain25yr,
+         in_floodplain50yr, in_floodplain100yr, building_area, area_floodplain2yr, area_floodplain5yr,
+         area_floodplain10yr, area_floodplain25yr, area_floodplain50yr, area_floodplain100yr,
+         exposure_2yr, exposure_5yr, exposure_10yr, exposure_25yr, exposure_50yr, exposure_100yr,
+         center_lat, center_lon)
+
+# check
+glimpse(final_exposure_vulnerability)
+colSums(is.na(final_exposure_vulnerability))
+
+# Write File
+st_write(
+  final_exposure_vulnerability,
+  here("data", "processed", "building_exposure_vulnerability.gpkg")
+)
+
+
+

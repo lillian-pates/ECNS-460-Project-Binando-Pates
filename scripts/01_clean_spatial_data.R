@@ -25,7 +25,7 @@ municipalities <- st_read(here("data", "raw", "mex_admin_boundaries.shp", "mex_a
 buildings <- st_read(here("data", "raw", "microsoft_buildings_pozarica.gpkg"), quiet = TRUE)
 
 # river
-río_cazones <- st_read(here("data", "raw", "cazones", "rio_cazones_mainstem.gpkg"), quiet = TRUE)
+río_cazones <- st_read(here("data", "raw", "rio_cazones_osm.gpkg"), quiet = TRUE)
 
 # río cazones floodplain extents
 floodplain_2yr <- st_read(here("data", "raw", "floodplains_HAND", "floodplain_HAND_2yr.shp"), quiet = TRUE)
@@ -92,8 +92,8 @@ plot(st_geometry(poza_rica))
 
 # clip to only poza rica
 infrastructure_clipped <- st_intersection(infrastructure_fix, poza_rica)
-river_clipped <- st_intersection(río_cazones, poza_rica)
-floodplain_2yr_clipped <- st_intersection(floodplain_2yr, poza_rica)
+river_clipped <- st_filter(río_cazones, poza_rica_fix)
+
 floodplain_5yr_clipped <- st_intersection(floodplain_5yr, poza_rica)
 floodplain_10yr_clipped <- st_intersection(floodplain_10yr, poza_rica)
 floodplain_25yr_clipped <- st_intersection(floodplain_25yr, poza_rica)

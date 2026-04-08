@@ -301,9 +301,145 @@ fig2
 words
 
 ```{r}
+#| label: fig-exposure_elevation
+#| fig-cap: "ADD"
+#| eval: false
+
+glimpse(exposure_vulnerability)
+glimpse(flood_flow)
+
+library(dplyr)
+
+df_plot <- exposure_vulnerability |>
+  st_drop_geometry() |>
+  mutate(
+    elev_bin = ntile(building_elevation, 20)  # 20 quantile bins
+  )
+
+elev_summary <- df_plot |>
+  group_by(elev_bin) |>
+  summarize(
+    elev_mid = mean(building_elevation, na.rm = TRUE),
+    exposure_rate = mean(in_floodplain100yr, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(elev_summary, aes(x = elev_mid, y = exposure_rate)) +
+  geom_line(color = "#2b6cb0", linewidth = 1) +
+  geom_point(size = 2) +
+  labs(
+    x = "Elevation (m)",
+    y = "Share of Buildings Exposed",
+    title = "Exposure vs Elevation (100-Year Floodplain)"
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
+library(ggplot2)
 
+df <- exposure_vulnerability |> 
+  st_drop_geometry()
+
+ggplot(df, aes(x = building_elevation, y = in_floodplain100yr)) +
+  geom_jitter(height = 0.02, alpha = 0.05, color = "grey40") +
+  labs(
+    x = "Elevation (m)",
+    y = "Exposure (0/1)",
+    title = "Exposure vs Elevation"
+  ) +
+  theme_bw()
+
+glimpse(exposure_vulnerability)
+library(binsreg)
+
+binsreg(
+  y = df$exposure_100yr,
+  x = df$building_elevation,
+  nbins = 20
+)
+
+binsreg(
+  y = df$area_floodplain100yr,
+  x = df$building_elevation,
+  nbins = 20
+)
+
+ggplot(df, aes(x = building_elevation, y = exposure_100yr)) +
+  geom_jitter(height = 0.02, alpha = 0.03) +
+  stat_summary_bin(
+    fun = mean,
+    bins = 20,
+    geom = "line",
+    color = "#2b6cb0",
+    linewidth = 1
+  ) +
+  labs(
+    x = "Elevation (m)",
+    y = "Probability of Exposure",
+    title = "Exposure vs Elevation (Binned)"
+  ) +
+  theme_bw()
+```
+
+```{r}
+#| eval: false
+
+
+library(dplyr)
+library(tidyr)
+
+df_long <- exposure_vulnerability |>
+  st_drop_geometry() |>
+  select(
+    building_elevation,
+    in_floodplain2yr,
+    in_floodplain5yr,
+    in_floodplain10yr,
+    in_floodplain25yr,
+    in_floodplain50yr,
+    in_floodplain100yr
+  ) |>
+  pivot_longer(
+    cols = starts_with("in_floodplain"),
+    names_to = "floodplain",
+    values_to = "exposed"
+  )
+
+df_long <- df_long |>
+  mutate(elev_bin = ntile(building_elevation, 20))
+
+summary_df <- df_long |>
+  group_by(floodplain, elev_bin) |>
+  summarize(
+    elev_mid = mean(building_elevation),
+    exposure_rate = mean(exposed),
+    .groups = "drop"
+  )
+
+summary_df <- summary_df |>
+  mutate(floodplain = recode(floodplain,
+    "in_floodplain2yr" = "2-year",
+    "in_floodplain5yr" = "5-year",
+    "in_floodplain10yr" = "10-year",
+    "in_floodplain25yr" = "25-year",
+    "in_floodplain50yr" = "50-year",
+    "in_floodplain100yr" = "100-year"
+  ))
+
+ggplot(summary_df, aes(x = elev_mid, y = exposure_rate, color = floodplain)) +
+  geom_line(linewidth = 1) +
+  labs(
+    x = "Elevation (m)",
+    y = "Share of Buildings Exposed",
+    title = "Exposure vs Elevation Across Flood Return Periods",
+    color = "Floodplain"
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Sources:

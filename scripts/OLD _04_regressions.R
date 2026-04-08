@@ -49,18 +49,12 @@ floods = read_csv("data/processed/flood_timeseries_clean.csv")
 
 slope = terrain(dem_pz, v = "slope", unit = "degrees")
 
-plot(slope)
-
 aspect = terrain(dem_pz, v = "aspect")
-
-plot(aspect)
 
 hill = shade(
   terrain(dem_pz, "slope"),
   terrain(dem_pz, "aspect")
 )
-
-plot(hill)
 
 ############################################################
 # Preliminary Visuals 
@@ -82,7 +76,7 @@ floods |>
   ggplot(aes(x = mid, y = prop_flood)) +
   geom_point() +
   geom_smooth(se = TRUE) +
-  labs(y= "Proportion flooded", x= "Predicted flow")
+  labs(y = "Proportion flooded", x = "Predicted flow")
 
 ## Actual river flow vs flood indications
 floods |>
@@ -93,53 +87,14 @@ floods |>
   ggplot(aes(x = mid, y = prop_flood)) +
   geom_point() +
   geom_smooth(se = TRUE) +
-  labs(y= "Proportion flooded", x = "Predicted flow")
+  labs(y = "Proportion flooded", x = "Predicted flow")
 
 ## Predicted River Flow vs Flood cause 
 ggplot(floods, aes(x = pred_flow , y = cause)) +
   geom_jitter(height = 0.05, alpha = 0.3)
 
-## Histograms of building area, elevation, slope, river distance 
-expos |>
-  st_drop_geometry() |>
-  select(river_distance, building_elevation, building_slope, building_area) |>
-  pivot_longer(everything()) |>
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 30, fill = "#0A7398", color = "white") +
-  facet_wrap(~name, scales = "free") +
-  labs(x = NULL, y = "Count")
 
-## Histogram of River distance by floodplain status
-ggplot(expos, aes(x = river_distance, fill = factor(in_floodplain100yr))) +
-  geom_histogram(bins = 30, color = "white", alpha = 0.7, position = "identity") +
-  scale_fill_manual(values = c("0" = "grey70", "1" = "#0A7398")) +
-  labs(fill = "In 100yr floodplain")
 
-##Proportion of buildings in each floodplain 
-expos |>
-  st_drop_geometry() |>
-  select(starts_with("in_floodplain")) |>
-  pivot_longer(everything()) |>
-  group_by(name) |>
-  summarise(prop = mean(value)) |>
-  ggplot(aes(x = name, y = prop)) +
-  geom_col() +
-  coord_flip() +
-  labs(y = "Proportion of buildings in floodplain", x = NULL)
-
-##Mapping the buildings colored by floodplain status
-ggplot(expos) +
-  geom_sf(aes(fill = factor(in_floodplain100yr)), size = 0.1) +
-  scale_fill_manual(values = c("0" = "grey80", "1" = "#0A7398")) +
-  labs(fill = "In 100yr floodplain")
-
-##Distribution of river distance by floodplain status (100Yr)
-expos |>
-  st_drop_geometry() |>
-  ggplot(aes(x = river_distance, fill = factor(in_floodplain100yr))) +
-  geom_density(alpha = 0.5) +
-  scale_x_log10() + 
-  labs(fill = "In 100yr floodplain")
 
 ############################################################
 # Data Behavior 
@@ -153,3 +108,20 @@ expos |>
 
 
 ############################################################
+
+
+
+protected_intersect = st_filter(population, flood_plain2yr) # default: st_intersects
+protected_within = st_filter(population, flood_plain2yr, .predicate = st_within)
+protected_intersection = st_intersection(population, flood_plain2yr)
+
+tm_shape(flood_plain2yr) + tm_polygons() +
+  tm_shape(protected_intersect) + tm_polygons(col = "green", alpha = 0.5) +
+  tm_shape(protected_intersection) + tm_polygons(col = "red", alpha = 0.5)
+
+schools_nad83 = st_transform(population, st_crs(flood_plain2yr))
+schools_tract = st_join(schools_nad83, flood_plain2yr)
+
+tmap_mode("view")
+tm_shape(flood_plain2yr) + tm_polygons(col = 'white', border.col = 'black') +
+  tm_shape(schools_tract) + tm_dots(col = 'GEOID')

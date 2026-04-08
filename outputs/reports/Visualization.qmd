@@ -2,6 +2,10 @@
 title: "Visualization"
 author: "Bailey Binando, Lillian Pates"
 format: html
+execute:
+  echo: false
+  warning: false
+  message: false
 editor: visual
 ---
 
@@ -17,10 +21,11 @@ When you click the **Render** button a document will be generated that includes 
 #| echo: false
 
 # load packages
-library(ggplot2)
+library(tidyverse)
 library(sf) # vector data
 library(terra) # rastor data
 library(plotly)
+library(here)
 ```
 
 You can add options to executable code like this
@@ -31,21 +36,35 @@ You can add options to executable code like this
 # load data
 
 # floodplain shapefiles (2yr, 5yr, 10yr, 25yr, 50yr, 100yr)
-floodplain_2yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_2yr.shp", quiet = TRUE)
-floodplain_5yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_5yr.shp", quiet = TRUE)
-floodplain_10yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_10yr.shp", quiet = TRUE)
-floodplain_25yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_25yr.shp", quiet = TRUE)
-floodplain_50yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_50yr.shp", quiet = TRUE)
-floodplain_100yr <- st_read("../data/raw/floodplains_HAND/floodplain_HAND_100yr.shp", quiet = TRUE)
+floodplain_2yr  <- st_read(here("data", "processed", "floodplain_2yr.gpkg"),  quiet = TRUE)
+floodplain_5yr  <- st_read(here("data", "processed", "floodplain_5yr.gpkg"),  quiet = TRUE)
+floodplain_10yr <- st_read(here("data", "processed", "floodplain_10yr.gpkg"), quiet = TRUE)
+floodplain_25yr <- st_read(here("data", "processed", "floodplain_25yr.gpkg"), quiet = TRUE)
+floodplain_50yr <- st_read(here("data", "processed", "floodplain_50yr.gpkg"), quiet = TRUE)
+floodplain_100yr <- st_read(here("data", "processed", "floodplain_100yr.gpkg"), quiet = TRUE)
+
+# floodplain asset exposure
+floodplain_exposure <- read_csv(here("outputs", "tables", "floodplain_exposure_summary.csv"))
+
+poza_rica <- st_read(here("data", "processed", "poza_rica.gpkg"), quiet = TRUE)
 
 # poza rica building footprint
-buildings <- st_read("../data/raw/microsoft_buildings_pozarica.gpkg", quiet = TRUE)
+buildings <- st_read(here("data", "processed", "buildings_clipped.gpkg"), quiet = TRUE)
+
+# poza rica total assets
+poza_rica_assets <- read_csv(here("outputs", "tables", "poza_rica_asset_summary.csv"))
+
+# building exposure/vulnerability
+exposure_vulnerability <- st_read(here("data", "processed", "building_exposure_vulnerability.gpkg"), quiet = TRUE)
 
 # dem
-dem <- rast("../data/raw/floodplains_HAND/dem_input.tif")
+dem <- rast(here("data", "processed", "dem_pozarica.tif"))
 
 # river
-river <- st_read("../data/raw/cazones/rio_cazones_osm.shp", quiet = TRUE)
+river <- st_read(here("data", "processed", "river_clipped.gpkg"), quiet = TRUE)
+
+# flood timeseries
+flood_flow <- read_csv(here("data", "processed", "flood_timeseries_clean.csv"))
 
 ```
 
@@ -53,43 +72,177 @@ The `echo: false` option disables the printing of code (only output is displayed
 
 ```{r}
 
+# 100yr floodplain
+ratio_buildings_fp100 <- floodplain_exposure|>
+  filter(floodplain == "fp100") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp100 <- round(ratio_buildings_fp100 * 100, 2)
+
+ratio_area_fp100 <- floodplain_exposure|>
+  filter(floodplain == "fp100") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp100 <- round(ratio_area_fp100 * 100, 2)
+
+# 50yr floodplain
+ratio_buildings_fp50 <- floodplain_exposure|>
+  filter(floodplain == "fp50") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp50 <- round(ratio_buildings_fp50 * 100, 2)
+
+ratio_area_fp50 <- floodplain_exposure|>
+  filter(floodplain == "fp50") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp50 <- round(ratio_area_fp50 * 100, 2)
+
+# 25yr floodplain
+ratio_buildings_fp25 <- floodplain_exposure|>
+  filter(floodplain == "fp25") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp25 <- round(ratio_buildings_fp25 * 100, 2)
+
+ratio_area_fp25 <- floodplain_exposure|>
+  filter(floodplain == "fp25") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp25 <- round(ratio_area_fp25 * 100, 2)
+
+
+# 10yr floodplain
+ratio_buildings_fp10 <- floodplain_exposure|>
+  filter(floodplain == "fp10") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp10 <- round(ratio_buildings_fp10 * 100, 2)
+
+ratio_area_fp10 <- floodplain_exposure|>
+  filter(floodplain == "fp10") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp10 <- round(ratio_area_fp10 * 100, 2)
+
+
+# 5yr floodplain
+ratio_buildings_fp5 <- floodplain_exposure|>
+  filter(floodplain == "fp5") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp5 <- round(ratio_buildings_fp5 * 100, 2)
+
+ratio_area_fp5 <- floodplain_exposure|>
+  filter(floodplain == "fp5") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp5 <- round(ratio_area_fp5 * 100, 2)
+
+# 2yr floodplain
+ratio_buildings_fp2 <- floodplain_exposure|>
+  filter(floodplain == "fp2") |>
+  pull(buildings_exposed_ratio)
+
+pct_buildings_fp2 <- round(ratio_buildings_fp2 * 100, 2)
+
+ratio_area_fp2 <- floodplain_exposure|>
+  filter(floodplain == "fp2") |>
+  pull(building_area_exposed_ratio)
+
+pct_area_fp2 <- round(ratio_area_fp2 * 100, 2)
+```
+
+```{r}
+#| label: floodplain_exposure_map
+#| out-width: "100%"
+#| fig-height: 6
+
+
 library(ggplot2)
 library(plotly)
 library(viridis)
 
-cols <- viridis(5, option = "plasma", direction = -1)
-xmin <- -97.52999
-ymin <-  20.43726
-xmax <- -97.33529
-ymax <-  20.60058
+cols <- viridis(7, option = "plasma", direction = -1)
 
 map <- ggplot() +
-  geom_sf(data = floodplain_100yr, aes(fill = "Floodplain (100yr)"), alpha = 0.3, color = "black") +
-  geom_sf(data = floodplain_50yr, aes(fill = "Floodplain (50yr)"), alpha = 0.1, color = "black") +
-  geom_sf(data = floodplain_25yr, aes(fill = "Floodplain (25yr)"), alpha = 0.1, color = "black") +
-  geom_sf(data = floodplain_10yr, aes(fill = "Floodplain (10yr)"), alpha = 0.1, color = "black") +
-  geom_sf(data = floodplain_5yr, aes(fill = "Floodplain (5yr)"), alpha = 0.1, color = "black") +
-  geom_sf(data = buildings, color = "grey60", alpha = 0.75) +
-  geom_sf(data = river, color = "darkblue", linewidth = 1) +
-
+  geom_sf(data = poza_rica, 
+          aes(text = paste0("Municipal Boundary",
+                            "<br>Population: 189,457 (2020 Census)")), fill = "#f7f3ea", color = "grey70", linewidth = 0.2) +
+  
+  geom_sf(data = floodplain_100yr, 
+          aes(fill = "Floodplain (100yr)",
+              text = paste0("100-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp100, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp100, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = floodplain_50yr, 
+          aes(fill = "Floodplain (50yr)",
+              text = paste0("50-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp50, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp50, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = floodplain_25yr, 
+          aes(fill = "Floodplain (25yr)",
+              text = paste0("25-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp25, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp25, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = floodplain_10yr, 
+          aes(fill = "Floodplain (10yr)",
+              text = paste0("10-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp10, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp10, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = floodplain_5yr, 
+          aes(fill = "Floodplain (5yr)",
+              text = paste0("5-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp5, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp5, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = floodplain_2yr, 
+          aes(fill = "Floodplain (2yr)",
+              text = paste0("2-Year Floodplain",
+                            "<br>Buildings Exposed: ", pct_buildings_fp2, "%",
+                            "<br>Building Area Exposed: ", pct_area_fp2, "%")),
+          alpha = 0.2, color = NA) +
+  
+  geom_sf(data = buildings, color = "grey40", alpha = 0.7, size = 0.06) +
+  geom_sf(data = river, color = "#2b6cb0",
+          aes(text = "Río Cazones"),
+          linewidth = 0.75) +
   labs(
-    title = "Map of Poza Rica, Veracruz, México",
+    title = "Floodplain Exposure",
     subtitle = "Words",
     fill = "Flood Extent"
   ) +
   scale_fill_manual(
     values = c(
-      "Floodplain (5yr)" = cols[1],
-      "Floodplain (10yr)" = cols[2],
-      "Floodplain (25yr)" = cols[3],
-      "Floodplain (50yr)" = cols[4],
-      "Floodplain (100yr)" = cols[5]
+      "Floodplain (2yr)" = cols[2],
+      "Floodplain (5yr)" = cols[3],
+      "Floodplain (10yr)" = cols[4],
+      "Floodplain (25yr)" = cols[5],
+      "Floodplain (50yr)" = cols[6],
+      "Floodplain (100yr)" = cols[7]
     )
   ) +
   theme_bw() +
-  theme(panel.grid = element_blank())
+  coord_sf(
+  xlim = c(661970, 666857),
+  ylim = c(2266165, 2278800),
+  expand = FALSE
+) +
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(hjust = 0.5)
+  )
 
-ggplotly(map)
+ggplotly(map, tooltip = "text")
+
 
 
 ```
@@ -97,6 +250,7 @@ ggplotly(map)
 ```{r}
 #| fig-width: 9
 #| fig-height: 7
+#| eval: FALSE
 library(ggplot2)
 library(plotly)
 library(viridis)
@@ -224,60 +378,109 @@ g
 ```
 
 ```{r}
+#| eval: false
 
-
-municipality <- st_read("~/Desktop/ECNS 460/GitHub/ECNS-460/ECNS-460-Project-Binando-Pates/data/raw/mex_admin_boundaries.shp/mex_admin2.shp")
-
+library(terra)
 library(dplyr)
-library(stringr)
+library(terra)
 
-poza_rica <- municipality %>%
-  filter(str_detect(adm2_name, "Poza Rica"))
+# compute slope and aspect from DEM
+slope  <- terrain(dem, v = "slope", unit = "radians")
+aspect <- terrain(dem, v = "aspect", unit = "radians")
 
-plot(st_geometry(poza_rica))
+# compute hillshade
+hill <- shade(slope, aspect)
+
+dem_df <- as.data.frame(dem, xy = TRUE, na.rm = TRUE)
+colnames(dem_df)[3] <- "elevation"
+
+dem_df <- dem_df |>
+  mutate(fct_elevation = cut(elevation, breaks = 3))
+
+dem_df <- dem_df |>
+  mutate(fct_elevation = cut(elevation, breaks = 5))
+
+library(ggplot2)
+
+ggplot(dem_df, aes(x = fct_elevation)) +
+  geom_bar() +
+  labs(
+    title = "Distribution of Elevation",
+    x = "Elevation Bin",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+hill_df <- as.data.frame(hill, xy = TRUE, na.rm = TRUE)
+colnames(hill_df)[3] <- "hillshade"
+
+ggplot() +
+  geom_raster(
+    data = hill_df,
+    aes(x = x, y = y, alpha = hillshade)
+  ) +
+  scale_alpha(range = c(0.15, 0.65), guide = "none") +
+  coord_equal() +
+  theme_void()
+
+
+
 ```
 
 ```{r}
-library(sf)
+#| eval: false
 
-library(sf)
-library(dplyr)
+slope  <- terrain(dem, v = "slope", unit = "radians")
+aspect <- terrain(dem, v = "aspect", unit = "radians")
+hill   <- shade(slope, aspect)
 
-# make sure CRS matches first
-municipality <- st_transform(municipality, st_crs(buildings))
 
-poza_rica <- municipality %>%
-  filter(grepl("Poza Rica", adm2_name, ignore.case = TRUE))
+hill_df <- as.data.frame(hill, xy = TRUE, na.rm = TRUE)
+colnames(hill_df)[3] <- "hillshade"
 
-# 1) are the geometries valid?
-st_is_valid(poza_rica)
-table(st_is_valid(buildings))
 
-building_reasons <- st_is_valid(buildings, reason = TRUE)
+map <- ggplot() +
+  geom_raster(
+    data = hill_df,
+    aes(x = x, y = y, alpha = hillshade)
+  ) +
+  scale_alpha(range = c(0.15, 0.65), guide = "none") +
+  coord_equal() + # prevents distortion
+  theme_void()
 
-table(building_reasons[!st_is_valid(buildings)])
 
-library(sf)
-library(dplyr)
 
-# match CRS
-municipality <- st_transform(municipality, st_crs(buildings))
 
-# get Poza Rica
-poza_rica <- municipality %>%
-  filter(grepl("Poza Rica", adm2_name, ignore.case = TRUE))
-
-# repair building geometries
-buildings_fixed <- st_make_valid(buildings)
-
-# confirm repair worked
-table(st_is_valid(buildings_fixed))
-
-buildings_clipped <- buildings_fixed[
-  st_intersects(buildings_fixed, poza_rica, sparse = FALSE)[,1],
-]
-
-plot(st_geometry(poza_rica), border = "red", lwd = 2)
-plot(st_geometry(buildings_clipped), col = "lightblue", border = NA)
-
+ggplotly(map)
 ```
+
+```{r}
+#| eval: false
+
+map <- ggplot() +
+  # hillshade background
+  geom_raster(
+    data = hill_df,
+    aes(x = x, y = y, fill = hillshade)
+  ) +
+  scale_fill_gradient(low = "gray20", high = "gray95", guide = "none") +
+
+  # river
+  geom_sf(data = river, color = "blue", linewidth = 0.4) +
+
+  # floodplain
+  geom_sf(data = floodplain_100yr, fill = "red", alpha = 0.2, color = NA) +
+
+  # buildings
+  #geom_sf(data = buildings, color = "black", size = 0.1) +
+
+  coord_sf() +
+  theme_void() +
+  labs(title = "Flood Exposure Map")
+
+ggplotly(map)
+```
+
+Sources:
+
+<https://carpentry.library.ucsb.edu/2022-08-09-ucsb-r-geospatial/02-raster-plot/>

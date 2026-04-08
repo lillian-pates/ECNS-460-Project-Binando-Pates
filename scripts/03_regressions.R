@@ -65,6 +65,14 @@ plot(hill)
 ############################################################
 # Preliminary Visuals 
 
+
+## Flood Plain 100 yr flood extent 
+ggplot() +
+  geom_sf(data = flood_plain100yr, fill = "#0A7398", color = NA, alpha = 0.6) +
+  geom_sf(data = rivers, color = "#08306b", linewidth = 0.5) +
+  theme_void() +
+  labs(title = "Cazones River Flood Extent")
+
 ## Predicted river flow vs flood indications 
 floods |>
   mutate(flow_bin = cut(pred_flow, breaks = 20)) |>

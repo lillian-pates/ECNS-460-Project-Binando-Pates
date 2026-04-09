@@ -94,7 +94,7 @@ ggplot(floods, aes(x = pred_flow , y = cause)) +
 ## Histograms of building area, elevation, slope, river distance 
 expos |>
   st_drop_geometry() |>
-  select(river_distance, building_elevation, building_slope, building_area) |>
+  select(river_distance, building_elevation, building_slope) |>
   pivot_longer(everything()) |>
   ggplot(aes(x = value)) +
   geom_histogram(bins = 30, fill = "#0A7398", color = "white") +

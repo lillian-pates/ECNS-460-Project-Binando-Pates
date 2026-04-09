@@ -1,7 +1,9 @@
 ---
 title: "Stage 2: Visualization"
 author: "Bailey Binando, Lillian Pates"
-format: html
+format:
+  html: 
+    page-layout: full
 execute:
   echo: false
   warning: false
@@ -301,145 +303,90 @@ fig2
 words
 
 ```{r}
-#| label: fig-exposure_elevation
-#| fig-cap: "ADD"
-#| eval: false
+#| label: fig-histograms_of_key_vars
+#| fig-width: 12
+#| fig-height: 6
+#| fig-cap: "Distribution of Exposure & Vulnerability Indicators 
+#| <br>Data Sources: Microsoft Building Footprints, NASA Earthdata" 
 
-glimpse(exposure_vulnerability)
-glimpse(flood_flow)
-
-library(dplyr)
-
-df_plot <- exposure_vulnerability |>
+exposure_vulnerability |>
   st_drop_geometry() |>
-  mutate(
-    elev_bin = ntile(building_elevation, 20)  # 20 quantile bins
+  select(river_distance, building_elevation, building_slope) |>
+  pivot_longer(everything()) |>
+  mutate(name = recode(name,
+    "river_distance"    = "Distance to River (m)",
+    "building_elevation" = "Building Elevation (m)",
+    "building_slope"    = "Building Slope (°)"
+  )) |>
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "#0A7398", color = "white") +
+  facet_wrap(~name, scales = "free") +
+  labs(title= "Histograms",  x = NULL, y = "Count") +
+  theme_bw()+
+  theme(
+    panel.grid = element_blank(), # remove gridlines
+    plot.title = element_text(hjust = 0.5), # center title
   )
-
-elev_summary <- df_plot |>
-  group_by(elev_bin) |>
-  summarize(
-    elev_mid = mean(building_elevation, na.rm = TRUE),
-    exposure_rate = mean(in_floodplain100yr, na.rm = TRUE),
-    n = n(),
-    .groups = "drop"
-  )
-
-library(ggplot2)
-
-ggplot(elev_summary, aes(x = elev_mid, y = exposure_rate)) +
-  geom_line(color = "#2b6cb0", linewidth = 1) +
-  geom_point(size = 2) +
-  labs(
-    x = "Elevation (m)",
-    y = "Share of Buildings Exposed",
-    title = "Exposure vs Elevation (100-Year Floodplain)"
-  ) +
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5))
-
-
-library(ggplot2)
-
-df <- exposure_vulnerability |> 
-  st_drop_geometry()
-
-ggplot(df, aes(x = building_elevation, y = in_floodplain100yr)) +
-  geom_jitter(height = 0.02, alpha = 0.05, color = "grey40") +
-  labs(
-    x = "Elevation (m)",
-    y = "Exposure (0/1)",
-    title = "Exposure vs Elevation"
-  ) +
-  theme_bw()
-
-glimpse(exposure_vulnerability)
-library(binsreg)
-
-binsreg(
-  y = df$exposure_100yr,
-  x = df$building_elevation,
-  nbins = 20
-)
-
-binsreg(
-  y = df$area_floodplain100yr,
-  x = df$building_elevation,
-  nbins = 20
-)
-
-ggplot(df, aes(x = building_elevation, y = exposure_100yr)) +
-  geom_jitter(height = 0.02, alpha = 0.03) +
-  stat_summary_bin(
-    fun = mean,
-    bins = 20,
-    geom = "line",
-    color = "#2b6cb0",
-    linewidth = 1
-  ) +
-  labs(
-    x = "Elevation (m)",
-    y = "Probability of Exposure",
-    title = "Exposure vs Elevation (Binned)"
-  ) +
-  theme_bw()
 ```
 
+words
+
 ```{r}
-#| eval: false
+#| label: fig-elevation_distance
+#| fig-height: 16
+#| fig-width: 14
+#| fig-cap: "Hexbin plot of Poza Rica mean exposure ratio across building distance from Río Cazones and elevation. Mean exposure is the ratio of building surface area exposed to flooding. The majority of building exposure lies within an elevation ~80m. <br>Data Sources: Microsoft Building Footprints, NASA Earthdata, OCHA, HAND Floodplain"
 
-
-library(dplyr)
-library(tidyr)
-
-df_long <- exposure_vulnerability |>
+elevation_distance <- exposure_vulnerability |>
   st_drop_geometry() |>
-  select(
-    building_elevation,
-    in_floodplain2yr,
-    in_floodplain5yr,
-    in_floodplain10yr,
-    in_floodplain25yr,
-    in_floodplain50yr,
-    in_floodplain100yr
-  ) |>
+  select(building_elevation, river_distance, exposure_2yr, exposure_5yr, exposure_10yr,
+         exposure_25yr, exposure_50yr, exposure_100yr) |>
   pivot_longer(
-    cols = starts_with("in_floodplain"),
+    cols = c(exposure_2yr, exposure_5yr, exposure_10yr, exposure_25yr, 
+             exposure_50yr, exposure_100yr),
     names_to = "floodplain",
-    values_to = "exposed"
+    values_to = "exposure"
+  ) |>
+  mutate(
+    floodplain = factor(floodplain,
+                        levels = c("exposure_2yr", "exposure_5yr", "exposure_10yr", 
+                                   "exposure_25yr", "exposure_50yr", "exposure_100yr"))
   )
 
-df_long <- df_long |>
-  mutate(elev_bin = ntile(building_elevation, 20))
-
-summary_df <- df_long |>
-  group_by(floodplain, elev_bin) |>
-  summarize(
-    elev_mid = mean(building_elevation),
-    exposure_rate = mean(exposed),
-    .groups = "drop"
-  )
-
-summary_df <- summary_df |>
-  mutate(floodplain = recode(floodplain,
-    "in_floodplain2yr" = "2-year",
-    "in_floodplain5yr" = "5-year",
-    "in_floodplain10yr" = "10-year",
-    "in_floodplain25yr" = "25-year",
-    "in_floodplain50yr" = "50-year",
-    "in_floodplain100yr" = "100-year"
-  ))
-
-ggplot(summary_df, aes(x = elev_mid, y = exposure_rate, color = floodplain)) +
-  geom_line(linewidth = 1) +
+hexbin <- ggplot(elevation_distance, aes(x = building_elevation, y = river_distance)) +
+  stat_summary_hex(
+    aes(z = exposure, text = after_stat(paste0("Mean Exposure: ", round(value, 2)))),
+    fun = mean,
+    bins = 20
+  ) +
+  scale_fill_viridis_c(name = "Mean Exposure Ratio", option = "plasma") +
   labs(
     x = "Elevation (m)",
-    y = "Share of Buildings Exposed",
-    title = "Exposure vs Elevation Across Flood Return Periods",
-    color = "Floodplain"
+    y = "Distance to River (m)",
+    title = "Effect of Building Distance and Elevation on Flood Exposure"
   ) +
+  # adds a line
+  annotate("segment", x = 80, y = 47.614, xend = 80, 
+           yend = 8200, color = "grey60", linewidth = 1, linetype = "dashed") +
+  # adds text annotation of street name
+  annotate("text", x = 80, y = 8200, label = "Elevation Threshold: ~80m", size = 3) +
   theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(
+    panel.grid = element_blank(), # remove gridlines
+    plot.title = element_text(hjust = 0.5), # center title
+  ) +
+  facet_wrap(~ floodplain,
+             labeller = as_labeller(c("exposure_2yr" = "2-Year Flood",
+                                      "exposure_5yr" = "5-Year Flood",
+                                      "exposure_10yr" = "10-Year Flood ", 
+                                      "exposure_25yr" = "25-Year Flood", 
+                                      "exposure_50yr" = "50-Year Flood", 
+                                      "exposure_100yr" = "100-Year Flood")))
+
+fig4 <- ggplotly(hexbin, tooltip = "text")
+
+fig4
+
 ```
 
 Sources:

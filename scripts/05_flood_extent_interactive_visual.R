@@ -2,9 +2,9 @@
 # POZA RICA FLOOD EXTENT VISUALIZATIONS — HAND METHOD
 # OpenStreetMap basemap + publication-ready static maps + interactive leaflet
 # =============================================================================
-# install.packages(c("sf", "ggplot2", "leaflet", "leaflet.extras",
-#                    "maptiles", "tidyterra", "ggspatial",
-#                    "RColorBrewer", "htmlwidgets", "dplyr", "patchwork"))
+install.packages(c("sf", "ggplot2", "leaflet", "leaflet.extras",
+                    "maptiles", "tidyterra", "ggspatial",
+                    "RColorBrewer", "htmlwidgets", "dplyr", "patchwork"))
 
 library(sf)
 library(ggplot2)
@@ -20,7 +20,7 @@ library(patchwork)
 # =============================================================================
 # !! EDIT THESE PATHS !!
 # =============================================================================
-hand_dir   <- "~/Desktop/FloodAnalysis/output/floodplains_HAND"
+hand_dir   <- "~/Desktop/ECNS 460/GitHub/ECNS-460/ECNS-460-Project-Binando-Pates/data/raw/floodplains_HAND"
 river_path <- "~/Desktop/FloodAnalysis/hecras_project/cazones_middle.shp"
 output_dir <- "~/Desktop/FloodAnalysis/output/figures"
 dir.create(path.expand(output_dir), showWarnings = FALSE, recursive = TRUE)

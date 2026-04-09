@@ -363,7 +363,7 @@ hexbin <- ggplot(elevation_distance, aes(x = building_elevation, y = river_dista
   labs(
     x = "Elevation (m)",
     y = "Distance to River (m)",
-    title = "Effect of Building Distance and Elevation on Flood Exposure"
+    title = "Relationship of Distance from River and Elevation on Flood Exposure"
   ) +
   # adds a line
   annotate("segment", x = 80, y = 47.614, xend = 80, 
@@ -388,6 +388,10 @@ fig4 <- ggplotly(hexbin, tooltip = "text")
 fig4
 
 ```
+
+The objective of the hexbin plot is to highlight the impact of river distance and elevation on flooded areas, as well as the interaction of these two variables.
+
+illustrate the interaction of building distance and elevation
 
 Sources:
 

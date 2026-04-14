@@ -19,7 +19,7 @@ How does flood exposure vary across elevation, river proximity, and floodplain e
 - `data/`: raw and processed datasets
 - `scripts/`: numbered data processing and modeling pipeline
 - `outputs/`: figures, tables, and html report files
-- `references/`: project sources and additional information
+- `references/`: project sources and additional project information
 
 ### Reproducibility
 1. Install required R packages

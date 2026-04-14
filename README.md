@@ -11,9 +11,11 @@ How does flood exposure vary across elevation, river proximity, and floodplain e
 ### Data Sources
 - NASA Digital Elevation Maps
 - Microsoft Building Footprints
-- WorldPop: México - Spatial Distribution of Population
+- OCHA
 - DesInventar & News Source Flood Events
 - LISFLOOD River Flow Forecast
+- HAND (Height Above Nearest Drainage)
+- HEC-RAS
 
 ### Repository Structure
 - `data/`: raw and processed datasets

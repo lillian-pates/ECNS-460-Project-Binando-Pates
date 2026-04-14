@@ -4,6 +4,5 @@
 - sf
 - terra
 - here
-- lubridate
 - slider
 - readxl

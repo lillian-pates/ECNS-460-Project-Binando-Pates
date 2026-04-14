@@ -1,14 +1,19 @@
+############################################################
+# Montana State University 
+# Project: ECNS 460 Data Analytics Spring 2026
+# Author: Bailey Binando & Lillian Pates
+# Created: 2026-04-01
+# Last Updated: 2026-04-05
 
-# Bailey Binando and Lillian Pates
-
+# Script 3
 # Source #1: Spatial Statistics for Data Science: Theory and Practice with R
 # url: https://www.paulamoraga.com/book-spatial/the-sf-package-for-spatial-vector-data.html
-
 # Source #2: Digital Soil Mapping with R
 # url: https://zia207.quarto.pub/digital-terrain-analysis.html
-
 # Source #3: R for GIS for Economists
 # url: https://tmieno2.github.io/R-as-GIS-for-Economists-Quarto/chapters/02-VectorDataBasics.html
+# Output: Building Expsoure Spatial Data files 
+############################################################
 
 # Load Packages
 library(tidyverse)

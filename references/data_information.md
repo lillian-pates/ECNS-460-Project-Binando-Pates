@@ -39,9 +39,9 @@ The administrative municipality boundary shapefile for Poza Rica was acquired fr
 Source: https://data.humdata.org/group/mex?q=administrative&ext_page
 
 ### Floodplain Extents
-Words
+Using DEM model and shape files of the Rio Canzones, water surface elevation models for the return period [2, 5, 10, 25, 50, 100] year were developed with the HEC-RAS software. Utilizing these water surface elevation models, the HAND algorithm was applied with the R library whitebox.
 
-Source: 
+Source: HEC-RAS & HAND algorithm 
 
 
 

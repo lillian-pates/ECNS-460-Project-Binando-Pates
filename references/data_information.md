@@ -2,7 +2,7 @@
 The data for this project includes ERA5 cummulative basin precipitation, LISFLOOD forecasted river discharge rates, flood event dates, spatial data, and floodplain extents.
 
 ## Dataset Relation
-The analysis utilizes several datasets to descriptively analyze building exposure and vulnerability in Poza, Rica, Veracruz, México. Spatial data will be combined with LISFLOOD generated flood extents to estimate the relationship between key spatial variables, flood extents, and assets. In combining the spatial datasets (topography, hydrology, land-use, etc.), the hope is to improve understanding and differences of flood exposure to improve economic proxy for flood damages.
+The analysis utilizes several datasets to descriptively analyze building exposure and vulnerability in Poza, Rica, Veracruz, México. Spatial data will be combined with LISFLOOD derived flood extents to estimate the relationship between key spatial variables, flood extents, and assets. In combining the spatial datasets (topography, hydrology, land-use, etc.), the hope is to improve understanding and differences of flood exposure to improve economic proxy for flood damages.
 
 ## ERA5 
 Daily cummulative watershed precipitation was collected from the European Centre for Medium-Range Weather Forecasts's ERA5 reanalysis model (1975-2025). This is a publically avaiable assimilation dataset, utilizing physics, model data, and station observations to reconstruct global climate and weather. Precipitation data was provided by capstone sponsor.
@@ -39,9 +39,9 @@ The administrative municipality boundary shapefile for Poza Rica was acquired fr
 Source: https://data.humdata.org/group/mex?q=administrative&ext_page
 
 ### Floodplain Extents
-Words
+Using DEM model and shape files of the Rio Canzones, water surface elevation models for the return period [2, 5, 10, 25, 50, 100] year were developed with the HEC-RAS software. Utilizing these water surface elevation models, the HAND algorithm was applied with the R library whitebox.
 
-Source: 
+Source: HEC-RAS & HAND algorithm 
 
 
 

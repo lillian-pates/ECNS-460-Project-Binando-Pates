@@ -16,6 +16,7 @@ How does flood exposure vary across elevation, river proximity, and floodplain e
 - LISFLOOD River Flow Forecast
 - HAND (Height Above Nearest Drainage)
 - HEC-RAS
+- OpenStreetMap’s (OSM) Waterways
 
 ### Repository Structure
 - `data/`: raw and processed datasets

@@ -6,3 +6,8 @@
 - here
 - slider
 - readxl
+- broom
+- plotly
+- hexbin
+- knitr
+- patchwork

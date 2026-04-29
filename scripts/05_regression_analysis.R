@@ -3,51 +3,45 @@
 # Project: ECNS 460 Data Analytics Spring 2026
 # Authors: Bailey Binando & Lillian Pates
 # Created: 2026-04-22
-# Last Updated: 2026-04-27
+# Last Updated: 2026-04-28
 
 # Script 5 
 # Purpose: Regression Analysis 
 ############################################################
-# Preliminary: Libraries 
-
+# Load Packages
 library(sf)
 library(tidyverse)
-library(tmap)
 library(terra)
 library(broom)
+library(here)
 
 ############################################################
-# Preliminary: Data  
-
+# Load Data 
 ## Main 
-dem_pz = rast("data/processed/dem_pozarica.tif")
-rivers = st_read("data/processed/river_clipped.gpkg")
-flooding = read_csv("data/processed/flood_timeseries_clean.csv")
+dem_pz = rast(here("data", "processed", "dem_pozarica.tif"))
+rivers = st_read(here("data", "processed", "river_clipped.gpkg"))
+flooding = read_csv(here("data", "processed", "flood_timeseries_clean.csv"))
 
 ## For Analysis
-population = st_read("data/processed/poza_rica.gpkg")
-buildings = st_read("data/processed/buildings_clipped.gpkg")
-key_infrastructure = read_csv("data/processed/poza_rica_key_infrastructure.csv")
-expos = st_read("data/processed/building_exposure_vulnerability.gpkg")
+population = st_read(here("data", "processed", "poza_rica.gpkg"))
+buildings = st_read(here("data", "processed", "buildings_clipped.gpkg"))
+expos = st_read(here("data", "processed", "building_exposure_vulnerability.gpkg"))
 
 ############################################################
-## Feature Engineering 
+## Load Data 
 
-##Adding elevation to buildings 
-building_centroids = st_centroid(expos)
-elevation_extract = extract(dem_pz, vect(building_centroids))
-expos$elevation = elevation_extract[, 2]
-
-##Compute distance to river from each buildings
-building_centroids = st_centroid(buildings)
-dist_matrix = st_distance(building_centroids, rivers)
-buildings$dist_river = apply(dist_matrix, 1, min)
-buildings$dist_river = as.numeric(buildings$dist_river)
-
-## Prepping dataset for analysis
-analysis_df = expos |> st_drop_geometry() |>
-  select(exposure_100yr, elevation, river_distance, building_slope) |> drop_na() |>
-  mutate(exposed = ifelse(exposure_100yr > 0, 1, 0)) |>
+analysis_df = expos |> 
+  st_drop_geometry() |>
+  select(
+    exposure_100yr,
+    elevation = building_elevation,
+    river_distance,
+    building_slope
+  ) |>
+  drop_na() |>
+  mutate(
+    exposed = ifelse(exposure_100yr > 0, 1, 0)
+  ) |>
   as.data.frame()
 
 ############################################################
@@ -80,7 +74,8 @@ print(p_hist)
 
 ## Transforming river distance (more info in report) 
 ## Adding a nonlinear (exponential) elevation variable
-analysis_df = analysis_df |> mutate(log_river_distance = log(river_distance+1), 
+analysis_df = analysis_df |> 
+  mutate(log_river_distance = log(river_distance+1), 
                                     elevation_sq = elevation^2)
 
 ## Histogram of river distance after transformation
@@ -252,13 +247,14 @@ model7 = glm(exposed ~ elevation * log_river_distance + building_slope,data = an
 summary_m7 = summary(model7)
 
 ##Model 8: Nonlinear elevation
-model8 = glm( exposed ~ elevation_sq + log_river_distance + building_slope, data = analysis_df, family = binomial)
+model8 = glm( exposed ~ elevation + elevation_sq + log_river_distance + building_slope, data = analysis_df, family = binomial)
 summary_m8 = summary(model8)
 
 ############################################################
 ## Model Analysis & Comparison
 
-models = list(
+# create list of model names & models
+models <- list(
   "Model 1: Elevation" = model1,
   "Model 2: Log River Distance" = model2,
   "Model 3: Building Slope" = model3,
@@ -269,21 +265,34 @@ models = list(
   "Model 8: Nonlinear Elevation" = model8
 )
 
-##Comparison table
-model_comparison = data.frame(
-  Model = names(models),
-  AIC = sapply(models, AIC),
-  BIC = sapply(models, BIC),
-  Deviance = sapply(models, deviance),
-  Null_Deviance = sapply(models, function(m) m$null.deviance)
-) |>
-  mutate(
-    Pseudo_R2 = 1 - (Deviance / Null_Deviance),
-    across(where(is.numeric), ~round(.x, 4))
-  ) |> 
+# create dataframe
+model_comparison <- data.frame()
+
+for (name in names(models)) { # iterate through the models
+  m <- models[[name]]
+  
+  row <- data.frame(Model = name,
+                    AIC = AIC(m), # measures model complexity
+                    BIC = BIC(m), 
+                    Deviance = deviance(m), # model fit
+                    Null_Deviance = m$null.deviance, # baseline model
+                    Pseudo_R2 = 1 - (deviance(m) / m$null.deviance)) # improvement over null model
+                  
+  # join rows together
+  model_comparison <- rbind(model_comparison, row)
+}
+
+# arrange AIC from least to greatest
+model_comparison <- model_comparison |>
   arrange(AIC)
 
 print(model_comparison)
 
-############################################################
+# view model 7 coefficent stats
+print(summary_m7)
+summary_table_m7 <- tidy(model7)
 
+# write .csv file of model comparisons and m7 coef stats
+write.csv(model_comparison, here("outputs", "tables", "model_comparison.csv"), row.names = FALSE)
+write.csv(summary_table_m7, here("outputs", "tables", "top_model_summary.csv"), row.names = FALSE)
+############################################################

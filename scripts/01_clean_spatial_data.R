@@ -92,8 +92,9 @@ plot(st_geometry(poza_rica))
 
 # clip to only poza rica
 infrastructure_clipped <- st_intersection(infrastructure_fix, poza_rica)
-river_clipped <- st_filter(río_cazones, poza_rica_fix)
+river_clipped <- st_filter(río_cazones, poza_rica)
 
+floodplain_2yr_clipped <- st_intersection(floodplain_2yr, poza_rica)
 floodplain_5yr_clipped <- st_intersection(floodplain_5yr, poza_rica)
 floodplain_10yr_clipped <- st_intersection(floodplain_10yr, poza_rica)
 floodplain_25yr_clipped <- st_intersection(floodplain_25yr, poza_rica)

@@ -20,7 +20,7 @@ This project serves as a descriptive extension of the Financial Engineering Para
 
 **Background**
 
-In October of 2025, the city of Poza Rica located in Veracruz, México experienced a catastrophic flood which resulted in deaths and property damage. The Mexican government had previously purchased a parametric insurance policy for such geological disasters. However, the index failed to be triggered which resulted in the Mexican government not receiving a payout. Many citizens were left without aid and the Mexican president received intense backlash. In light of this, our financial engineering capstone is to develop models that produce the optimal trigger in order to avoid another payout failure. With over 40 confirmed floods from 1971-2025, this area is specifically prone to flooding due to its position near the Gulf of Mexico, river basin geography, low elevation, poor infrastructure, and improper urban planning.  
+In October of 2025, the city of Poza Rica located in Veracruz, México experienced a catastrophic flood which resulted in deaths and property damage. The Mexican government had previously purchased a parametric insurance policy for such geological disasters. However, the index failed to trigger which resulted in the Mexican government not receiving a payout from their parametric insurance policy. Many citizens were left without aid and the Mexican president received intense backlash. In light of this, our financial engineering capstone is to develop models that produce the optimal trigger in order to avoid another payout failure. With over 40 confirmed floods from 1971-2025, this area is specifically prone to flooding due to its position near the Gulf of Mexico, river basin geography, low elevation, poor infrastructure, and improper urban planning (Atlas de Riesgos, 2025).  
 
 **Devastation of October 2025 Poza Rica Flooding**
 
@@ -32,7 +32,7 @@ In October of 2025, the city of Poza Rica located in Veracruz, México experienc
 
 **Purpose**
 
-Previous catastrophic floods highlighted gaps in Poza Rica’s preparedness and city planning.  Due to limited economic damage data, an impact proxy for floods in the region needed to be developed. In light of this, we were able to provide greater context into Poza Rica's exposure and vulnerability through descriptive analysis. Spatial analysis was conducted to analyze key vulnerability variables: slope, elevation, and proximity to the Río Cazones River. Exposure has been defined as the number of buildings and building surface area inundated in a floodplain. In addition, vulnerability has been defined as susceptible a building is to damage given flooding. These insights can be implemented into future urban planning as well as improvements to parametric insurance policies to better serve the people of Poza Rica.  
+Previous catastrophic floods have highlighted gaps in Poza Rica’s preparedness and city planning. Due to limited economic damage data, an impact proxy for floods in the region needed to be developed. In light of this, we were able to provide greater context into Poza Rica's exposure and vulnerability through descriptive analysis. Spatial analysis was conducted to analyze key vulnerability variables: slope, elevation, and proximity to the Río Cazones. Exposure has been defined as the number of buildings and building surface area inundated in a floodplain. In addition, building vulnerability is approximated from key spatial drivers that impact susceptibility and severity. These insights can be implemented into future urban planning as well as improvements to parametric insurance policies to better serve the people of Poza Rica.  
 
 **Research Question**
 
@@ -44,19 +44,19 @@ We analyzed all buildings in Poza Rica (n = 57,016) with spatial data across thr
 
 *Elevation*: Height above sea level, extracted from a high-resolution digital elevation model (DEM model) 
 
-*Distance to River*: Straight-line distance from each building to the Rio Canzones 
+*Distance to River*: Straight-line distance from each building to the Rio Cazones 
 
 *Building Slope*: Steepness of surrounding terrain, derived from elevation data 
 
-Flood exposure was defined as a binary outside, if each building fell inside or outside the 100-year floodplain. Each return level floodplain coincides with the flood expected probability, so the flood on this scale is expected to occur once per century). Analysis was performed in two parts: spatial and descriptive.  
+Flood exposure was defined as a binary indicator, if each building fell inside or outside the 100-year floodplain. Each return level floodplain coincides with the flood expected probability, so the flood on this scale has a 1% probability of occurring in a given year. Analysis was performed in two parts: spatial and descriptive.  
 
 Spatial Analysis: Using DEM model and shape files of the Río Cazones, water surface elevation models for the return periods (2, 5, 10, 25, 50, 100) were developed with the HEC-RAS software. Utilizing these water surface elevation models, the HAND algorithm was applied to construct the floodplain extents. To define exposure, we calculated the proportion of each building’s total area that lies within modeled floodplain boundaries for different return periods. Exposure is then expressed as a normalized ratio, allowing for consistent comparison across buildings of different sizes.  
 
-Descriptive Analysis: This analysis focused on topographic and spatial variables (elevation, distance to the river, and building slope) that were expected to influence both exposure and vulnerability. Summary statistics and distributional visualizations were used to characterize these variables and identify potential skewness or nonlinear patterns. Transformations such as the logarithm of river distance and squared elevation were introduced to better capture realistic relationships, including diminishing effects of distance from the river and nonlinear elevation impacts. Additionally, the relationship between these variables and flood exposure was examined using visual tools such as smoothed probability curves, boxplots, and binned exposure rates. These descriptive patterns provided initial evidence of how flood risk varies across the landscape and inform statistical regression models. 
+Descriptive Analysis: This analysis focused on topographic and spatial variables (elevation, distance to the river, and building slope) that were expected to influence both exposure and vulnerability. Summary statistics and distributional visualizations were used to characterize these variables and identify potential skewness or nonlinear patterns. Transformations such as the log of river distance and squared elevation were introduced to better capture realistic relationships, including diminishing effects of distance from the river and nonlinear elevation impacts. Additionally, the relationship between these variables and flood exposure was examined using visual tools such as smoothed probability curves, boxplots, and binned exposure rates. These descriptive patterns provided initial evidence of how flood risk varies across the landscape and informs statistical regression models. 
 
 **Results**
 
-For the most extreme and impactful return period, 100-year floodplain, 37.28% of buildings were exposed and 44.12% of total building area was exposed. The spatial distribution of buildings relative to flood hazards reveals clear clustering patterns along the river corridor, where exposure is highest. Buildings located closer to the river and at lower elevations show substantially greater overlap with floodplain boundaries, particularly for higher return periods, indicating concentrated risk in these areas. In contrast, buildings situated farther from the river and at higher elevations exhibit minimal floodplain intersection, reflecting reduced exposure and lower vulnerability. Slope also contributes to this pattern, with flatter areas near the river more prone to accumulation and inundation compared to steeper terrain. The fact that the exposed area share exceeds the exposed building count share suggests that larger structures are disproportionately located in high-risk zones near the river corridor.  
+For the most extreme and impactful return period, 100-year floodplain, 37.28% of buildings were exposed and 44.12% of total building area was exposed. The spatial distribution of buildings relative to flood hazards reveals clear clustering patterns along the river corridor, where exposure is highest. Buildings located closer to the river and at lower elevations show substantially greater overlap with floodplain boundaries, particularly for higher return periods, indicating concentrated risk in these areas. In contrast, buildings situated farther from the river and at higher elevations exhibit minimal floodplain intersections, reflecting reduced exposure and lower vulnerability. Slope also contributes to this pattern, with flatter areas near the river more prone to accumulation and inundation compared to steeper terrain. The fact that the exposed area share exceeds the exposed building count share suggests that larger structures are disproportionately located in high-risk zones near the river corridor.  
 
 ```{r package_load}
 #| echo: false
@@ -113,8 +113,6 @@ reg_models <- read_csv(here("outputs", "tables", "model_comparison.csv"))
 # top model coefficent summary
 m7_coef <- read_csv(here("outputs", "tables", "top_model_summary.csv"))
 ```
-
-The interactive floodplain map @fig-floodplain_exposure_map illustrates this clustering clearly: inundated buildings concentrate in a narrow band along the river, with exposure declining markedly as distance increases. As return period increases from 2-year to 100-year events, the floodplain expands laterally, capturing progressively more of the low-lying urban landscape on both sides of the river. The digital elevation map @fig-elevation_map reinforces this pattern, showing that the most exposed areas correspond to the lowest-lying portions of the city, consistent with Poza Rica’s position in a broad river basin near the Gulf of Mexico. 
 
 ```{r}
 #| label: fig1_exposed_vars
@@ -304,7 +302,7 @@ fig1
 
 ```
 
-The interactive floodplain map @fig-floodplain_exposure_map illustrates this clustering clearly: inundated buildings concentrate in a narrow band along the river, with exposure declining markedly as distance increases. As return period increases from 2-year to 100-year events, the floodplain expands laterally, capturing progressively more of the low-lying urban landscape on both sides of the river. The digital elevation map @fig-elevation_distance reinforces this pattern, showing that the most exposed areas correspond to the lowest-lying portions of the city, consistent with Poza Rica’s position in a broad river basin near the Gulf of Mexico. 
+The interactive floodplain map @fig-floodplain_exposure_map illustrates this clustering clearly: inundated buildings concentrate in a narrow band along the river, with exposure declining markedly as distance increases. As return period increases from 2-year to 100-year events, the floodplain expands laterally, capturing progressively more of the low-lying urban landscape on both sides of the river. The digital elevation map @fig-elevation_distance reinforces this pattern, showing that the most exposed areas correspond to the lowest-lying portions of the city, consistent with Poza Rica’s position in a broad river basin near the Gulf of Mexico (Atlas de Riesgos, 2025).
 
 ```{r}
 #| label: fig-elevation_map
@@ -382,9 +380,11 @@ hexbin <- ggplot(elevation_distance, aes(x = building_elevation, y = river_dista
 fig3 <- hexbin
 
 fig2 + fig3
+
+
 ```
 
-These findings are further supported with the descriptive analysis. The distributions of the three key predictor variables (elevation, slope, and distance to river) are each right-skewed, indicating that most buildings are clustered at low elevations, on flatter terrain, and in close proximity to the river. This means that a large share of Poza Rica's building stock sits precisely in the most hazard-prone portion of the landscape, making the city structurally vulnerable to flood events of moderate and severe magnitude alike. To quantify these relationships, a series of logistic regression models were fit using binary floodplain exposure (within/outside the 100-year floodplain) as the outcome. The predictor variables considered were elevation, log-transformed distance to the Río Cazones, and building slope. River distance was log-transformed to reflect the diminishing marginal effect of distance on exposure. Eight candidate models of increasing complexity were evaluated and compared using AIC, BIC, and McFadden's Pseudo-R². 
+These findings are further supported with descriptive analysis. The distributions of the three key predictor variables (elevation, slope, and distance to river) are each right-skewed, indicating that most buildings are clustered at low elevations, on flatter terrain, and in close proximity to the river. This means that a large share of Poza Rica's building assets sits precisely in the most hazard-prone portion of the landscape, making the city structurally vulnerable to flood events of moderate and severe magnitudes. To quantify these relationships, a series of logistic regression models were fit using binary floodplain exposure (within/outside the 100-year floodplain) as the outcome. The predictor variables considered were elevation, log-transformed distance to the Río Cazones, and building slope. River distance was log-transformed to reflect the diminishing marginal effect of distance on exposure. Eight candidate models of increasing complexity were evaluated and compared using AIC, BIC, and McFadden's Pseudo-R². 
 
 All predictors are statistically significant across all models at the 99% significance level. The single-predictor models were investigated to establish the individual contribution of each variable. Elevation is the strongest individual predictor (Pseudo-R² = 0.335): its negative coefficient (−0.081) indicates that each additional meter of elevation decreases the log-odds of flood exposure. This means that a building at 10 meters is substantially more likely to be exposed than one at 80 meters. Log river distance alone (Pseudo-R² = 0.138) carries a negative coefficient (−1.144), confirming that exposure declines as distance from the river increases, with the logarithmic scale capturing the steep risk drop-off near the channel. Slope alone (Pseudo-R² = 0.237) is negative (−0.493), reflecting that steeper terrain resists inundation while flatter areas accumulate water more readily. 
 
@@ -402,7 +402,7 @@ knitr::kable(reg_models,
 
 ```
 
-Combining elevation and log river distance (Model 4) raises explanatory power to Pseudo-R² = 0.370, this confirms that river proximity contributes independently of elevation. Adding slope (Model 5, Pseudo-R² = 0.387) and an elevation × log river distance interaction (Model 6, Pseudo-R² = 0.392) each yield incremental improvements. Model 7, which includes the interaction term and slope, achieves the best overall fit (Pseudo-R² = 0.403, AIC = 44,947). The interaction term (coefficient = 0.051) indicates that the protective effect of distance from the river is amplified at higher elevations. This means that buildings that are both elevated and far from the river face far greater decrease in exposure risk. Model 8, which substitutes a squared elevation term for linear elevation, performs worse than Model 7 (AIC = 45,921) despite similar complexity, suggesting the nonlinear elevation specification does not improve on the interaction approach and risks overfitting. 
+Combining elevation and log river distance (Model 4) raises explanatory power to Pseudo-R² = 0.370, this confirms that river proximity contributes independently of elevation. Adding slope (Model 5, Pseudo-R² = 0.387) and an elevation × log river distance interaction (Model 6, Pseudo-R² = 0.392) each yield incremental improvements. Model 7, which includes the interaction term and slope, achieves the best overall fit (Pseudo-R² = 0.403, AIC = 44,947). The interaction term (coefficient = 0.051) indicates that the protective effect of distance from the river is amplified at higher elevations. This means that buildings that are both elevated and far from the river face far greater decrease in exposure risk. Model 8 (AIC = 45,915), which substitutes a squared elevation and elevation term for linear elevation, performs worse than Model 7 despite similar complexity, suggesting the nonlinear elevation specification does not improve model fit from the interaction approach. 
 
 Model 7 is selected as the final model: 
 
@@ -430,7 +430,7 @@ The findings of this analysis carry direct implications for parametric insurance
 
 <!-- -->
 
--   Buildings below 80 meters and within 500 meters of the Río Cazones account for the overwhelming majority of exposure. The trigger calibrated to these thresholds would reduce basis risk. 
+-   Buildings below 80 meters and within 500 meters of the Río Cazones account for a large share of the exposure. The trigger calibrated to these thresholds would reduce basis risk through the increased alignment with flood damages. Additionally, the high risk of the area should be reflected in premium pricing.
 
 <!-- -->
 
@@ -446,7 +446,7 @@ The findings of this analysis carry direct implications for parametric insurance
 
 <!-- -->
 
--   New construction below the 80-meter elevation threshold and adjacent to the river should be limited. Existing development is already heavily concentrated in this zone; additional construction compounds long-term exposure. 
+-   New construction below the 80-meter elevation threshold and adjacent to the river should be limited. Existing development is already heavily concentrated in this zone; additional construction compounds long-term exposure. Furthermore, protective infrastructure within the high risk area needs to be maintained and rebuilt, especially following the devastating October 2025 flooding.
 
 ```{r}
 #| label: fig-risk_map
